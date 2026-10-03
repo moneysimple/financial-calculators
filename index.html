@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Money Calculator India</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f5f7fa;
+            color: #222;
+        }
+
+        header {
+            background: #1f4e79;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0 0 10px;
+            font-size: 32px;
+        }
+
+        header p {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .calculator {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .calculator h2 {
+            margin-top: 0;
+            color: #1f4e79;
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        button {
+            margin-top: 25px;
+            width: 100%;
+            padding: 14px;
+            background: #1f4e79;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #163a5c;
+        }
+
+        .results {
+            margin-top: 25px;
+            padding: 20px;
+            background: #eef5fb;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .amount {
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #666;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Money Calculator India</h1>
+    <p>Simple financial calculators for everyday Indian investors</p>
+</header>
+
+<div class="container">
+
+    <div class="calculator">
+
+        <h2>SIP Calculator</h2>
+
+        <p>
+            Calculate the estimated future value of your monthly SIP investment.
+        </p>
+
+        <label for="monthlyInvestment">
+            Monthly SIP Investment (₹)
+        </label>
+
+        <input
+            type="number"
+            id="monthlyInvestment"
+            value="5000"
+            min="0"
+        >
+
+        <label for="returnRate">
+            Expected Annual Return (%)
+        </label>
+
+        <input
+            type="number"
+            id="returnRate"
+            value="12"
+            min="0"
+            step="0.1"
+        >
+
+        <label for="investmentYears">
+            Investment Period (Years)
+        </label>
+
+        <input
+            type="number"
+            id="investmentYears"
+            value="10"
+            min="1"
+        >
+
+        <button onclick="calculateSIP()">
+            Calculate SIP
+        </button>
+
+        <div class="results" id="results">
+
+            <div class="result-row">
+                <span>Total Investment</span>
+                <span class="amount" id="totalInvestment"></span>
+            </div>
+
+            <div class="result-row">
+                <span>Estimated Returns</span>
+                <span class="amount" id="estimatedReturns"></span>
+            </div>
+
+            <div class="result-row">
+                <span>Estimated Future Value</span>
+                <span class="amount" id="futureValue"></span>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<footer>
+    This calculator provides an estimate for educational purposes only.
+    Actual investment returns may differ.
+</footer>
+
+<script>
+
+function formatRupees(amount) {
+
+    return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        maximumFractionDigits: 0
+    }).format(amount);
+
+}
+
+function calculateSIP() {
+
+    const monthlyInvestment =
+        Number(document.getElementById("monthlyInvestment").value);
+
+    const annualRate =
+        Number(document.getElementById("returnRate").value);
+
+    const years =
+        Number(document.getElementById("investmentYears").value);
+
+    const months = years * 12;
+
+    const monthlyRate = annualRate / 12 / 100;
+
+    let futureValue;
+
+    if (monthlyRate === 0) {
+
+        futureValue = monthlyInvestment * months;
+
+    } else {
+
+        futureValue =
+            monthlyInvestment *
+            (
+                (Math.pow(1 + monthlyRate, months) - 1)
+                / monthlyRate
+            ) *
+            (1 + monthlyRate);
+
+    }
+
+    const totalInvestment =
+        monthlyInvestment * months;
+
+    const estimatedReturns =
+        futureValue - totalInvestment;
+
+    document.getElementById("totalInvestment").innerText =
+        formatRupees(totalInvestment);
+
+    document.getElementById("estimatedReturns").innerText =
+        formatRupees(estimatedReturns);
+
+    document.getElementById("futureValue").innerText =
+        formatRupees(futureValue);
+
+    document.getElementById("results").style.display = "block";
+
+}
+
+</script>
+
+</body>
+</html>
