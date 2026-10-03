@@ -4,26 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Money Calculator India</title>
+    <title>SIP Calculator India | Money Calculator India</title>
+
+    <meta name="description" content="Free SIP calculator for India. Calculate your monthly investment, estimated returns and future value of your SIP.">
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
+            font-family: Arial, sans-serif;
             background: #f5f7fa;
             color: #222;
+            line-height: 1.6;
         }
 
         header {
             background: #1f4e79;
             color: white;
-            padding: 30px 20px;
+            padding: 35px 20px;
             text-align: center;
         }
 
         header h1 {
-            margin: 0 0 10px;
-            font-size: 32px;
+            margin: 0 0 8px;
+            font-size: 34px;
         }
 
         header p {
@@ -32,48 +39,58 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 950px;
             margin: 30px auto;
             padding: 0 20px;
         }
 
-        .calculator {
+        .card {
             background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border-radius: 14px;
+            padding: 28px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
         }
 
-        .calculator h2 {
-            margin-top: 0;
+        .card h2 {
             color: #1f4e79;
+            margin-top: 0;
+        }
+
+        .intro {
+            text-align: center;
         }
 
         label {
             display: block;
-            margin-top: 18px;
-            margin-bottom: 6px;
             font-weight: bold;
+            margin-top: 18px;
+            margin-bottom: 7px;
         }
 
         input {
             width: 100%;
-            padding: 12px;
-            box-sizing: border-box;
+            padding: 13px;
             border: 1px solid #ccc;
-            border-radius: 6px;
+            border-radius: 7px;
             font-size: 16px;
         }
 
+        input:focus {
+            outline: 2px solid #8bb8df;
+            border-color: #1f4e79;
+        }
+
         button {
-            margin-top: 25px;
             width: 100%;
-            padding: 14px;
+            margin-top: 25px;
+            padding: 15px;
             background: #1f4e79;
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 7px;
             font-size: 17px;
+            font-weight: bold;
             cursor: pointer;
         }
 
@@ -82,26 +99,46 @@
         }
 
         .results {
-            margin-top: 25px;
-            padding: 20px;
-            background: #eef5fb;
-            border-radius: 8px;
             display: none;
+            margin-top: 25px;
         }
 
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #ddd;
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
         }
 
-        .result-row:last-child {
-            border-bottom: none;
+        .result-box {
+            background: #eef5fb;
+            padding: 18px;
+            border-radius: 10px;
+            text-align: center;
         }
 
-        .amount {
-            font-weight: bold;
+        .result-box span {
+            display: block;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .result-box strong {
+            display: block;
+            font-size: 21px;
+            color: #1f4e79;
+        }
+
+        .info {
+            background: #fafafa;
+            border-left: 4px solid #1f4e79;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .faq h3 {
+            margin-bottom: 5px;
+            color: #1f4e79;
         }
 
         footer {
@@ -109,6 +146,21 @@
             padding: 30px 20px;
             color: #666;
             font-size: 13px;
+        }
+
+        @media (max-width: 700px) {
+
+            header h1 {
+                font-size: 28px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -122,13 +174,18 @@
 
 <div class="container">
 
-    <div class="calculator">
-
-        <h2>SIP Calculator</h2>
+    <div class="card intro">
+        <h2>Free SIP Calculator</h2>
 
         <p>
-            Calculate the estimated future value of your monthly SIP investment.
+            Calculate how much your monthly SIP investment could grow
+            over time based on an assumed annual return.
         </p>
+    </div>
+
+    <div class="card">
+
+        <h2>SIP Calculator</h2>
 
         <label for="monthlyInvestment">
             Monthly SIP Investment (₹)
@@ -139,6 +196,7 @@
             id="monthlyInvestment"
             value="5000"
             min="0"
+            placeholder="Example: 5000"
         >
 
         <label for="returnRate">
@@ -151,6 +209,7 @@
             value="12"
             min="0"
             step="0.1"
+            placeholder="Example: 12"
         >
 
         <label for="investmentYears">
@@ -162,6 +221,7 @@
             id="investmentYears"
             value="10"
             min="1"
+            placeholder="Example: 10"
         >
 
         <button onclick="calculateSIP()">
@@ -170,30 +230,95 @@
 
         <div class="results" id="results">
 
-            <div class="result-row">
-                <span>Total Investment</span>
-                <span class="amount" id="totalInvestment"></span>
-            </div>
+            <div class="result-grid">
 
-            <div class="result-row">
-                <span>Estimated Returns</span>
-                <span class="amount" id="estimatedReturns"></span>
-            </div>
+                <div class="result-box">
+                    <span>Total Investment</span>
+                    <strong id="totalInvestment"></strong>
+                </div>
 
-            <div class="result-row">
-                <span>Estimated Future Value</span>
-                <span class="amount" id="futureValue"></span>
+                <div class="result-box">
+                    <span>Estimated Returns</span>
+                    <strong id="estimatedReturns"></strong>
+                </div>
+
+                <div class="result-box">
+                    <span>Estimated Future Value</span>
+                    <strong id="futureValue"></strong>
+                </div>
+
             </div>
 
         </div>
 
     </div>
 
+    <div class="card">
+
+        <h2>How does a SIP work?</h2>
+
+        <p>
+            A Systematic Investment Plan (SIP) allows an investor to
+            invest a fixed amount regularly, usually every month.
+            Over time, the investment may grow through the effect of
+            compounding.
+        </p>
+
+        <div class="info">
+            <strong>Important:</strong>
+            This calculator provides an estimate based on the return
+            assumption you enter. Actual investment returns can be
+            higher or lower and are not guaranteed.
+        </div>
+
+    </div>
+
+    <div class="card faq">
+
+        <h2>SIP Calculator — Frequently Asked Questions</h2>
+
+        <h3>What is SIP?</h3>
+        <p>
+            SIP stands for Systematic Investment Plan. It is a method
+            of investing a fixed amount at regular intervals.
+        </p>
+
+        <h3>Is SIP return guaranteed?</h3>
+        <p>
+            No. The return used in this calculator is only an assumption
+            for estimation. Market-linked investments can fluctuate.
+        </p>
+
+        <h3>What does estimated future value mean?</h3>
+        <p>
+            It is the estimated value of your investment at the end of
+            the selected period based on the return assumption entered.
+        </p>
+
+        <h3>Can I change the SIP amount?</h3>
+        <p>
+            Yes. Enter any monthly investment amount and click
+            Calculate SIP again.
+        </p>
+
+    </div>
+
 </div>
 
 <footer>
-    This calculator provides an estimate for educational purposes only.
-    Actual investment returns may differ.
+
+    <p>
+        Money Calculator India
+    </p>
+
+    <p>
+        Last updated: October 2026
+    </p>
+
+    <p>
+        For educational purposes only. This calculator is not financial advice.
+    </p>
+
 </footer>
 
 <script>
@@ -218,6 +343,17 @@ function calculateSIP() {
 
     const years =
         Number(document.getElementById("investmentYears").value);
+
+    if (
+        monthlyInvestment <= 0 ||
+        annualRate < 0 ||
+        years <= 0
+    ) {
+
+        alert("Please enter valid values.");
+
+        return;
+    }
 
     const months = years * 12;
 
@@ -256,8 +392,8 @@ function calculateSIP() {
     document.getElementById("futureValue").innerText =
         formatRupees(futureValue);
 
-    document.getElementById("results").style.display = "block";
-
+    document.getElementById("results").style.display =
+        "block";
 }
 
 </script>
