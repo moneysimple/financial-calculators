@@ -399,7 +399,106 @@
 
     </div>
 
+<!-- PPF CALCULATOR -->
 
+<div class="card">
+
+    <h2>PPF Calculator</h2>
+
+    <p>
+        Estimate your Public Provident Fund maturity value,
+        total investment and estimated interest based on your
+        yearly contribution and assumed PPF interest rate.
+    </p>
+
+    <label for="ppfInitial">
+        Initial Investment (₹)
+    </label>
+
+    <input
+        type="number"
+        id="ppfInitial"
+        value="0"
+        min="0"
+        placeholder="Example: 10000"
+    >
+
+    <label for="ppfAnnual">
+        Yearly Investment (₹)
+    </label>
+
+    <input
+        type="number"
+        id="ppfAnnual"
+        value="150000"
+        min="0"
+        placeholder="Example: 150000"
+    >
+
+    <label for="ppfRate">
+        PPF Interest Rate (%)
+    </label>
+
+    <input
+        type="number"
+        id="ppfRate"
+        value="7.1"
+        min="0"
+        step="0.1"
+        placeholder="Example: 7.1"
+    >
+
+    <label for="ppfYears">
+        Investment Period (Years)
+    </label>
+
+    <input
+        type="number"
+        id="ppfYears"
+        value="15"
+        min="1"
+        max="50"
+        placeholder="Example: 15"
+    >
+
+    <button onclick="calculatePPF()">
+        Calculate PPF
+    </button>
+
+    <div class="results" id="ppfResults">
+
+        <div class="result-grid">
+
+            <div class="result-box">
+
+                <span>Total Investment</span>
+
+                <strong id="ppfTotalInvestment"></strong>
+
+            </div>
+
+            <div class="result-box">
+
+                <span>Estimated Interest</span>
+
+                <strong id="ppfInterest"></strong>
+
+            </div>
+
+            <div class="result-box">
+
+                <span>Estimated Maturity Value</span>
+
+                <strong id="ppfMaturity"></strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+   
     <!-- INFORMATION -->
 
     <div class="card">
@@ -697,6 +796,82 @@ function calculateStepUpSIP() {
 
 }
 
+function calculatePPF() {
+
+    const initialInvestment =
+        Number(document.getElementById("ppfInitial").value);
+
+    const annualInvestment =
+        Number(document.getElementById("ppfAnnual").value);
+
+    const annualRate =
+        Number(document.getElementById("ppfRate").value);
+
+    const years =
+        Number(document.getElementById("ppfYears").value);
+
+
+    if (
+        initialInvestment < 0 ||
+        annualInvestment < 0 ||
+        annualRate < 0 ||
+        years <= 0
+    ) {
+
+        alert("Please enter valid values.");
+
+        return;
+
+    }
+
+
+    const yearlyRate =
+        annualRate / 100;
+
+
+    let balance =
+        initialInvestment;
+
+    let totalInvestment =
+        initialInvestment;
+
+
+    for (let year = 1; year <= years; year++) {
+
+        /*
+         PPF interest is calculated annually.
+         For this simplified calculator, the yearly
+         contribution is added before annual interest.
+        */
+
+        balance =
+            (balance + annualInvestment) *
+            (1 + yearlyRate);
+
+        totalInvestment +=
+            annualInvestment;
+
+    }
+
+
+    const estimatedInterest =
+        balance - totalInvestment;
+
+
+    document.getElementById("ppfTotalInvestment").innerText =
+        formatRupees(totalInvestment);
+
+    document.getElementById("ppfInterest").innerText =
+        formatRupees(estimatedInterest);
+
+    document.getElementById("ppfMaturity").innerText =
+        formatRupees(balance);
+
+
+    document.getElementById("ppfResults").style.display =
+        "block";
+
+}    
 
 </script>
 
